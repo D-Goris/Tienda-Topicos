@@ -17,13 +17,14 @@ class Server {
         this.middlewares();
 
         this.routes();
+
     }
 
     middlewares() {
         this.app.use(cors());
         this.app.use(express.json());
     }
-
+    
     routes() {
         this.app.use(this.ruta.api , tiendaRouter);
 
@@ -41,5 +42,6 @@ class Server {
 
 export default Server;
 
-//Si quieren prender el server usen npm run dev en la consola distinta de powershell ejemplo git bash
-//Si no funciona revisen que tienen las dependencias instaladas con npm install express cors y vuelve a intentar
+//Si quieren prender el server usen el comando "npm run dev" en la consola distinta de powershell ejemplo git bash
+//Si no funciona revisen que tienen las dependencias instaladas con el comando npm install express cors mongodb y vuelve a intentar
+//La primera vez que inicien el server deberia de tarda debido a la instalación de la b/d con docker
