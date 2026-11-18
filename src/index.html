@@ -5,10 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda</title>
     <!--- Aqui se conecta con la hoja de estilos-->
-    <link rel="styles" href="styles.css" ></link>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <!--- Aqui se conecta con el achivo ts-->
-    <script type="module" src="script.ts"></script>
+<body class="cuerpo-tienda" id="cuerpo-tienda">
+
+  <!-- HEADER -->
+  <header class="header-tienda" id="header-tienda">
+    <h1 class="titulo-tienda" id="titulo-tienda">Tienda Oficial</h1>
+  </header>
+
+  <!-- CARRITO DESPLEGABLE -->
+  <aside class="carrito-panel" id="carrito-panel">
+    <section class="carrito-header" id="carrito-header">
+      <h2 class="carrito-titulo" id="carrito-titulo">Tu Carrito</h2>
+      <button type="button" class="btn-cerrar" id="btn-cerrar-carrito">&times;</button>
+    </section>
+
+    <ul class="carrito-lista" id="carrito-lista">
+      <!-- TS inyectará aquí los <li> con las piezas agregadas -->
+    </ul>
+
+    <footer class="carrito-footer" id="carrito-footer">
+      <p class="carrito-total-texto" id="carrito-total-texto">Total: $<output class="carrito-total-salida" id="carrito-total">0.00</output></p>
+      <button type="button" class="btn-checkout" id="btn-checkout">Finalizar Compra</button>
+    </footer>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-contenido" id="main-contenido">
+
+    <!-- MAIN CARRUSEL -->
+    <section class="seccion-carrusel" id="seccion-carrusel">
+      <h2 class="subtitulo-carrusel" id="subtitulo-carrusel">Piezas Destacadas</h2>
+      <button type="button" class="carrusel-btn btn-prev" id="btn-carrusel-prev">&#10094;</button>
+      <ul class="carrusel-pista" id="carrusel-pista">
+        <!-- TS inyectará aquí las piezas destacadas -->
+      </ul>
+      <button type="button" class="carrusel-btn btn-next" id="btn-carrusel-next">&#10095;</button>
+    </section>
+
+    <!-- FORMULARIO DE FILTROS -->
+    <form class="form-filtros" id="filter">
+      <section class="contenedor-filtros" id="contenedor-filtros">
+
+        <!-- Búsqueda por texto -->
+        <section class="campo-filtro campo-busqueda" id="search">
+          <label for="Search-by-text" class="label-filtro" id="label-search">Parámetros:</label>
+          <input type="text" class="input-texto" id="Search-by-text" name="Search-by-text" placeholder="Buscar pieza...">
+        </section>
+
+        <!-- Filtro por tipo -->
+        <section class="campo-filtro campo-tipo" id="type">
+          <label for="filter-type" class="label-filtro" id="label-type">Tipo:</label>
+          <select class="select-filtro" id="filter-type" name="filter-type">
+            <option class="opcion-filtro" value="">Todos los tipos</option>
+            <option class="opcion-filtro" value="1">Chasis</option>
+            <option class="opcion-filtro" value="2">Motor</option>
+            <option class="opcion-filtro" value="3">Ruedas</option>
+            <option class="opcion-filtro" value="4">Blindaje</option>
+            <option class="opcion-filtro" value="5">Armas</option>
+          </select>
+        </section>
+
+        <!-- Filtro por precio -->
+        <section class="campo-filtro campo-precio" id="price">
+          <p class="parrafo-filtro" id="parrafo-precio">
+            <label for="filtro-precio-max" class="label-filtro" id="label-precio-max">Precio máximo:</label>
+            <input type="number" class="input-numero" id="filtro-precio-max" name="filtro-precio-max" placeholder="Ej: 500">
+          </p>
+        </section>
+
+        <!-- Condiciones (checkboxes) -->
+        <section class="campo-filtro campo-condiciones" id="seccion-condiciones">
+          <fieldset class="grupo-checkboxes" id="fieldset-condiciones">
+            <legend class="legend-checkboxes" id="legend-condiciones">Condiciones:</legend>
+            <label class="label-checkbox" id="label-chatarreria">
+              <input type="checkbox" class="input-checkbox" id="filtro-chatarreria" name="filtro-chatarreria"> Solo chatarrería
+            </label>
+            <label class="label-checkbox" id="label-descuento">
+              <input type="checkbox" class="input-checkbox" id="filtro-descuento" name="filtro-descuento"> Con descuento
+            </label>
+          </fieldset>
+        </section>
+
+        <!-- Botones de acción del filtro -->
+        <menu class="menu-acciones-filtro" id="menu-acciones-filtro">
+          <button type="button" class="btn-accion btn-filtrar" id="btn-filtrar">Aplicar</button>
+          <button type="reset" class="btn-accion btn-limpiar" id="btn-limpiar">Limpiar</button>
+        </menu>
+
+      </section>
+    </form>
+
+    <!-- CATÁLOGO DE PIEZAS -->
+    <section class="seccion-catalogo" id="seccion-catalogo">
+      <h3 class="subtitulo-seccion" id="subtitulo-catalogo">Catálogo de Piezas</h3>
+      <ul class="lista-productos" id="lista-productos">
+        <!-- TS inyectará aquí los <li><article>...</article></li> -->
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer-tienda" id="footer-tienda">
+    <p class="footer-texto" id="footer-texto">copyright &copy; 2026 Tienda Oficial</p>
+  </footer>
+
+  <script type="module" src="script.ts"></script>
 </body>
 </html>
