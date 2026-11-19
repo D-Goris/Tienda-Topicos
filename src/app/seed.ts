@@ -5,13 +5,14 @@ import { ObjectId } from 'mongodb';
 //Este archivo sirve solo para poblar la b/d de datos si esta vacio, posiblemente tendramos que buscar una mejor manera en el futuro pero por ahora se queda así para ir probando
 // Si se quiere apagar la b/d, el comando es: docker compose down
 //SI se quiere no solo apagar si no tambien eliminar los datos de la b/d, el comando es: docker compose down -v
+
 async function poblarBaseDeDatos() {
     
     const repo = new repositoryPiezas();
     const piezasExistentes = await repo.leerTabla();
 
     if (piezasExistentes.length > 0) {
-        await repo.cliente.close();
+         await repo.cerrarConexion();
         return;
     }else{
         const piezasIniciales: Pieza[] = [
@@ -29,7 +30,7 @@ async function poblarBaseDeDatos() {
         console.log("Se lleno la b/d con datos por default")
     }
     
-    await repo.cliente.close();
+    await repo.cerrarConexion();
     }
 
 poblarBaseDeDatos();

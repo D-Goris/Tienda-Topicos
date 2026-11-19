@@ -1,91 +1,86 @@
 import { Pieza } from '../models/Pieza.ts';
-import { MongoClient, Collection, type UpdateResult, type InsertOneResult, type DeleteResult, type ObjectId} from 'mongodb';
+import mongoose from 'mongoose';
+import { PiezaModel } from '../models/Schema.ts';
 
-export class repositoryPiezas{
-    readonly URI : string;
-    readonly cliente : MongoClient;
-    readonly tabla : Collection<Pieza>;
+export class repositoryPiezas {
+    readonly URI: string;
 
-    constructor(){
-        this.URI='mongodb://localhost:27017/Tienda_Tópicos'
-        this.cliente = new MongoClient(this.URI);
-        this.tabla = this.cliente.db('Tienda_Tópicos').collection('Piezas');
+    constructor() {
+        this.URI = 'mongodb://localhost:27017/Tienda_Tópicos';
     }
 
-    async conectaraBD() : Promise<void> {
+    async conectaraBD(): Promise<void> {
         try {
-            await this.cliente.connect()
-            console.log('Conexión exitosa a MongoDB');
-            
+            if (mongoose.connection.readyState === 1) return;
+
+            await mongoose.connect(this.URI);
+            console.log('Conexión exitosa a MongoDB con Mongoose');
+
         } catch (error) {
-            throw new Error(`No sé puedo conectar a la b/d`)
+            throw new Error(`No se pudo conectar a la b/d`);
         }
     }
 
-    async leerTabla() : Promise<Pieza[]> {
-        let resultado : Pieza[];
-        await this.conectaraBD()
-
-        resultado = await this.tabla.find().toArray();
-
-        return resultado;
-    }
-
-    async buscarPorId(id: ObjectId): Promise<Pieza | null> {
+    async leerTabla(): Promise<Pieza[]> {
         await this.conectaraBD();
-        return await this.tabla.findOne({ _id: id });
+
+        return await PiezaModel.find().lean<Pieza[]>();
     }
 
-    async buscarPorsku(sku : string): Promise<Pieza | null> {
+    async buscarPorId(id: string | mongoose.Types.ObjectId): Promise<Pieza | null> {
         await this.conectaraBD();
-        return await this.tabla.findOne({ sku : sku.toUpperCase() });
+
+        return await PiezaModel.findById(id).lean<Pieza | null>();
     }
-    
-    async insertarPieza(pieza : Pieza) : Promise<boolean>{
+
+    async buscarPorsku(sku: string): Promise<Pieza | null> {
+        await this.conectaraBD();
+
+        return await PiezaModel.findOne({ sku: sku.toUpperCase() }).lean<Pieza | null>();
+    }
+
+    async insertarPieza(pieza: Pieza): Promise<boolean> {
         try {
-            let resultado : InsertOneResult<Pieza>;
             await this.conectaraBD();
 
-            resultado= await this.tabla.insertOne(pieza);
+            const nuevaPieza = await PiezaModel.create(pieza);
+            return nuevaPieza._id !== undefined && nuevaPieza._id !== null;
 
-            return resultado.acknowledged;
-
-        } catch (error) {
-            throw new Error("Error al insertar la pieza")
-
+        } catch (error: any) {
+            throw new Error(`Error al insertar la pieza: ${error.message}`);
         }
-        
     }
 
-    async modificarPieza(piezaNueva : Pieza) : Promise<boolean>{
+    async modificarPieza(piezaNueva: Pieza): Promise<boolean> {
         try {
-           let resultado : UpdateResult<Pieza>;
             await this.conectaraBD();
+
             const { _id, ...datosSinId } = piezaNueva;
-            resultado = await this.tabla.updateOne({ _id: _id }, { $set: datosSinId });
+            const resultado = await PiezaModel.updateOne(
+                { _id: _id },
+                { $set: datosSinId },
+                { runValidators: true }
+            );
 
-            if(resultado.matchedCount === 0 ) return false;
-            return true;
-
-        } catch (error) {
-            throw new Error("Error al modificar la pieza")
-        }   
-    }
-
-    async eliminarPieza(pieza : Pieza) : Promise<boolean>{
-        try {
-            let resultado : DeleteResult;
-            await this.conectaraBD();
-
-            resultado= await this.tabla.deleteOne({_id : pieza._id});
-
-            if(resultado.deletedCount === 0 ) return false;
-            return true;
-
-        } catch (error) {
-            throw new Error("Error al eliminar la pieza")
-
+            return resultado.matchedCount > 0;
+        } catch (error: any) {
+            throw new Error(`Error al modificar la pieza: ${error.message}`);
         }
     }
 
+    async eliminarPieza(pieza: Pieza): Promise<boolean> {
+        try {
+            await this.conectaraBD();
+
+            const resultado = await PiezaModel.deleteOne({ _id: pieza._id });
+            return resultado.deletedCount > 0;
+            
+        } catch (error: any) {
+            throw new Error(`Error al eliminar la pieza: ${error.message}`);
+        }
+    }
+
+    async cerrarConexion(): Promise<void> {
+        await mongoose.connection.close();
+    }
 }

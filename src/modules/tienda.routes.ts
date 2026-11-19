@@ -4,7 +4,7 @@ import tiendaController from './tienda.controller.ts'
 const tiendaRouter : Router = Router();
 
 //método 01
-tiendaRouter.get('/catalogo', tiendaController.obtenercatalogo);
+tiendaRouter.get('/catalogo', tiendaController.obtenerCatalogo);
 
 //método 02
 //tiendaRouter.get('/comprar-fabrica',tiendaController);
